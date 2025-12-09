@@ -13,10 +13,22 @@ bash ./build.sh
 # Function to run server in background
 run_server() {
     cd "$SITE_DIR"
-    echo "🚀 Server running at http://localhost:$PORT"
-    echo "Press Ctrl+C to stop"
-    python3 -m http.server "$PORT"
+    # Sleep briefly to let the build finish if it's racing, though we built above
+    sleep 1
+    echo ""
+    echo "-----------------------------------------------------"
+    echo "🚀 Server running at: http://127.0.0.1:$PORT"
+    echo "-----------------------------------------------------"
+    echo ""
+    python3 -m http.server "$PORT" >/dev/null 2>&1
 }
+
+# Start server in background
+run_server &
+SERVER_PID=$!
+
+# Clean up on exit
+trap "kill $SERVER_PID 2>/dev/null || true" EXIT
 
 # Watch for changes and rebuild
 if command -v watchexec >/dev/null 2>&1; then
@@ -36,9 +48,10 @@ else
             echo "🔄 Detected change in $CHANGED"
             ./build.sh
             echo "✅ Rebuilt at $(date +%H:%M:%S)"
+            echo "-----------------------------------------------------"
+            echo "🚀 Server running at: http://127.0.0.1:$PORT"
+            echo "-----------------------------------------------------"
         fi
     done
 fi
 
-# Clean up on exit
-trap "kill $SERVER_PID 2>/dev/null || true" EXIT
