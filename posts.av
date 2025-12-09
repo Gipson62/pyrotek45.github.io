@@ -1,0 +1,43 @@
+[
+    {
+        title: "How to be Wise",
+        slug: "how-to-be-wise",
+        date: "2025-12-08",
+        file: "content/how-to-be-wise.md",
+        desc: "The bucket theory of wisdom.",
+        questions: [
+            {
+                q: "If you can doubt Santa Claus as a kid, what other 'obvious truths' might you be wrong about right now?",
+                a: "..."
+            },
+            {
+                q: "Have you ever realized mid-argument that you were actually wrong? How did that feel?",
+                a: "..."
+            },
+            {
+                q: "You said you believed Santa Claus wasn't real, but the other kids believed he was. Who actually had knowledge, and who had mere belief?",
+                a: "..."
+            },
+            {
+                q: "If you got lucky and guessed the right answer on a test without studying, did you actually 'know' it?",
+                a: "..."
+            },
+            {
+                q: "What's a belief you've held for years that you've never actually questioned? Try to think of one.",
+                a: "..."
+            },
+            {
+                q: "What's something you once believed because someone told you it was true, before you ever checked it yourself?",
+                a: "..."
+            },
+            {
+                q: "If you became wise tomorrow, what's the first thing you'd do differently in your daily life?",
+                a: "..."
+            },
+            {
+                q: "Who's someone in your life who could benefit from learning to question their own bucket? Will you tell them about this?",
+                a: "..."
+            }
+        ]
+    }
+]
