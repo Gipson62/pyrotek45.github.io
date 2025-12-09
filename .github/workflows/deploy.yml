@@ -1,0 +1,32 @@
+name: Deploy Blog
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Avon
+        run: |
+          # Attempt to download Avon. Update this URL if necessary.
+          # Assuming a standard release naming convention.
+          curl -L -o avon https://github.com/pyrotek45/avon/releases/latest/download/avon-linux-amd64
+          chmod +x avon
+          sudo mv avon /usr/local/bin/
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
