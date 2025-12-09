@@ -196,9 +196,60 @@ let css = {{"
   .chat-message.right .sender-name {
     text-align: right;
   }
+  
+  /* Video Marquee */
+  .video-marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #333;
+    position: relative;
+  }
+  
+  .video-track {
+    display: inline-block;
+    animation: scroll 60s linear infinite;
+  }
+  
+  .video-track:hover,
+  .video-track:focus-within {
+    animation-play-state: paused;
+  }
+  
+  .video-item {
+    display: inline-block;
+    width: 280px;
+    height: 157px;
+    margin-right: 20px;
+    vertical-align: top;
+    border: 1px solid #333;
+    background: #000;
+  }
+  
+  .video-item iframe {
+    width: 100%;
+    height: 100%;
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 "}} in
 
 let username = "pyrotek45" in
+
+let header_html = {"
+    <header class="nav">
+      <h1><a href="../index.html">{username}</a></h1>
+      <p>Linux enjoyer, programming lang dev, musician and free will denier.</p>
+      <div class="links">
+        <a href="https://github.com/{username}" class="btn">GitHub</a>
+        <a href="https://discord.gg/xYVVcerH89" class="btn">Discord</a>
+      </div>
+    </header>
+"} in
 
 # --- Layout ---
 let layout = \title \content {"
@@ -214,15 +265,6 @@ let layout = \title \content {"
 </head>
 <body>
   <div class="container">
-    <header class="nav">
-      <h1><a href="index.html" style="border:none">{username}</a></h1>
-      <p>Linux enjoyer, programming lang dev, musician and free will denier.</p>
-      <div class="links">
-        <a href="https://github.com/{username}" class="btn">GitHub</a>
-        <a href="https://discord.gg/xYVVcerH89" class="btn">Discord</a>
-      </div>
-    </header>
-    
     <main>
       {content}
     </main>
@@ -239,6 +281,82 @@ let layout = \title \content {"
 
 let tags = ["Linux", "Rust", "Philosophy", "Music", "Trying new things"] in
 let marked_tags =  map (\t {"<span class="tag">{t}</span>"}) tags in
+
+# --- Projects List ---
+let projects = [
+  { name: "Avon", url: "https://github.com/pyrotek45/avon", desc: "File Deployment Tool and Template language" },
+  { name: "Nova-Lang", url: "https://github.com/pyrotek45/nova-lang", desc: "Programming language" }
+] in
+let project_items = map (\p {"
+  <div style="margin-bottom: 10px;">
+    <a href="{p.url}" target="_blank" style="font-weight: bold; border: none;">{p.name}</a>
+    <div style="font-size: 0.8em; color: #888;">{p.desc}</div>
+  </div>
+"}) projects in
+
+# --- Music Video Rotation ---
+# Add your YouTube Video IDs here
+let music_videos = [
+  "97IojQ09CI8", 
+  "rVfQGwVj5O0",
+  "IZePWjkBh0U", 
+  "Eur3EelqJOU",
+  "li-qUm6AUkU",
+  "7pudq6Z0FYY",
+  "JhxjI8lJtbk"
+] in
+# Duplicate list for seamless scrolling
+let marquee_videos = music_videos + music_videos in
+let video_items = map (\v {"
+  <div class="video-item">
+    <iframe src="https://www.youtube.com/embed/{v}?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+"}) marquee_videos in
+
+let marquee_script = {{"
+    <script>
+      // Load YouTube IFrame API
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var players = [];
+
+      function onYouTubeIframeAPIReady() {
+        var iframes = document.querySelectorAll('.video-item iframe');
+        iframes.forEach(function(iframe) {
+          players.push(new YT.Player(iframe, {
+            events: {
+              'onStateChange': onPlayerStateChange
+            }
+          }));
+        });
+      }
+
+      function onPlayerStateChange(event) {
+        var track = document.querySelector('.video-track');
+        if (!track) return;
+
+        // YT.PlayerState.PLAYING is 1
+        if (event.data == 1) {
+          track.style.animationPlayState = 'paused';
+        } else {
+           // Check if any player is playing
+           var anyPlaying = false;
+           for (var i = 0; i < players.length; i++) {
+             if (players[i].getPlayerState() == 1) {
+               anyPlaying = true;
+               break;
+             }
+           }
+           if (!anyPlaying) {
+             track.style.animationPlayState = 'running';
+           }
+        }
+      }
+    </script>
+"}} in
 
 # --- Page Generators ---
 
@@ -265,6 +383,16 @@ let index_page =
                                                                                                                                                         
     </div>
 
+    <div class="video-marquee">
+      <div class="video-track">
+        {video_items}
+      </div>
+    </div>
+
+    {marquee_script}
+
+    {header_html}
+
     <div class="home-grid">
       <div class="main-col">
         <h2>Latest Logs</h2>
@@ -275,27 +403,10 @@ let index_page =
       
       <div class="sidebar-col">
         <div class="sidebar-section">
-          <h3>Status</h3>
-          <p>🟢 <strong>System:</strong> Online</p>
-          <p>🎵 <strong>Vibe:</strong> Existing</p>
-          <p>📖 <strong>Reading:</strong> Rust</p>
+          <h3>Projects</h3>
+          {project_items}
         </div>
 
-        <div class="sidebar-section">
-          <h3>Focus</h3>
-          <p>Trying to learn how to write, and not go insane in the process.</p>
-          <div style="margin-top: 10px;">
-            {marked_tags}
-          </div>
-        </div>
-
-        <div class="sidebar-section">
-          <h3>Quote</h3>
-          <p style="font-style: italic; font-size: 0.9em;">
-            "The unexamined life is not worth living."
-            <br>— Socrates
-          </p>
-        </div>
       </div>
     </div>
   "} in
@@ -347,6 +458,7 @@ let blog_pages = map (\p
   in
 
   let page_content = {"
+    {header_html}
     <article>
       <h2>{p.title}</h2>
       <p class="date">{p.date}</p>

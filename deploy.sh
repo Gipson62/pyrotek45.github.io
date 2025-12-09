@@ -2,6 +2,7 @@
 set -e
 
 echo "📦 Building site..."
+rm -rf _site
 ./build.sh
 
 echo "🚀 Deploying to gh-pages branch..."
