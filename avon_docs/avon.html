@@ -2,6 +2,8 @@
 
 <p><strong>Avon</strong> is a tool that gives superpowers to your configuration files. It combines a functional programming language with a deployment system, allowing you to generate and manage hundreds of files from a single source of truth.</p>
 
+<p><em>In fact, this entire website is generated using Avon!</em> It's not just for configuration files; it can generate HTML, documentation, scripts, or any text-based format.</p>
+
 <h2>What is Avon?</h2>
 
 <p>At its core, Avon solves the "copy-paste-modify" problem. Instead of maintaining 50 nearly identical YAML, JSON, or config files, you write one Avon program that generates them all.</p>
@@ -25,24 +27,98 @@ let env = "production" in
 
 <p>When you run <code>avon --deploy</code>, this file is created instantly.</p>
 
-<h2>Key Features</h2>
+<h2>Modularity & Creativity</h2>
 
+<p>Every Avon file is a single expression. This means any Avon program can be imported into another, allowing for incredible modularity. You can build libraries of functions, templates, or data structures and compose them into larger systems.</p>
+
+<p>Because it's a full programming language, you can use it for creative tasks beyond just config files. I'm using it to generate this static blog, but you could use it to:</p>
 <ul>
-  <li><strong>Variables & Functions</strong>: Don't repeat yourself. Define values once and use them everywhere.</li>
-  <li><strong>Logic</strong>: Use <code>if/else</code>, <code>map</code>, and <code>filter</code> to dynamically generate configuration.</li>
-  <li><strong>Type Safety</strong>: Avon checks your types before generating files, catching errors early.</li>
-  <li><strong>Git Deployment</strong>: You can deploy directly from a git repository:
-    <pre><code>avon --git user/repo --root ./output</code></pre>
-  </li>
+    <li>Scaffold new project structures.</li>
+    <li>Generate boilerplate code for different languages.</li>
+    <li>Create personalized dotfiles for different machines.</li>
+    <li>Manage complex CI/CD pipelines.</li>
 </ul>
 
-<h2>Why Use Avon?</h2>
+<h2>Git Integration</h2>
 
-<ol>
-  <li><strong>Single Source of Truth</strong>: Change a value in one place, update 100 files.</li>
-  <li><strong>No More Typos</strong>: Programmatic generation eliminates copy-paste errors.</li>
-  <li><strong>Any Text File</strong>: If it's text, Avon can generate it.</li>
-</ol>
+<p>Avon has built-in Git support. You can run Avon programs directly from a GitHub repository without downloading them manually. This makes sharing and using tools incredibly easy.</p>
+
+<pre><code>avon --git pyrotek45/avon/examples/site_generator.av --root ./site</code></pre>
+
+<h2>Basic Commands</h2>
+
+<pre><code># Evaluate a program and print result
+avon eval examples/map_example.av
+
+# Deploy: evaluate program and generate files
+avon examples/site_generator.av --deploy --root ./output --force
+
+# Deploy with named arguments
+avon examples/greet.av --deploy -name Alice -age 30 --root ./gen --force
+</code></pre>
+
+<h2>Command-Line Flags</h2>
+
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<thead>
+<tr>
+<th style="border: 1px solid #333; padding: 8px; text-align: left;">Flag</th>
+<th style="border: 1px solid #333; padding: 8px; text-align: left;">Purpose</th>
+<th style="border: 1px solid #333; padding: 8px; text-align: left;">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>eval</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Evaluate program and print result</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>avon eval program.av</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--deploy</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Generate files using result</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>avon program.av --deploy ...</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>-param value</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Named argument for deploy</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--deploy -name alice</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--root &lt;dir&gt;</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Prepend directory to all generated paths</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--root ./output</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--force</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Overwrite existing files without warning</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--force</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--append</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Append to existing files instead of overwriting</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--append</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--if-not-exists</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Only write file if it doesn't already exist</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--if-not-exists</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--git owner/repo/path</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Fetch and deploy from GitHub (implies --deploy)</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--git pyrotek45/avon/examples/site.av</code></td>
+</tr>
+<tr>
+<td style="border: 1px solid #333; padding: 8px;"><code>--git-eval owner/repo/path</code></td>
+<td style="border: 1px solid #333; padding: 8px;">Fetch and evaluate from GitHub</td>
+<td style="border: 1px solid #333; padding: 8px;"><code>--git-eval pyrotek45/avon/examples/test.av</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2>Real-World Examples</h2>
+
+<p>I hope you find other useful reasons to use Avon. It's an incredibly powerful tool that can simplify complex workflows and ensure consistency across your projects. Whether you're managing Kubernetes manifests, generating static sites, or just trying to avoid copy-pasting config files, Avon gives you the superpowers to do it better.</p>
 
 <h2>Get Started</h2>
 
