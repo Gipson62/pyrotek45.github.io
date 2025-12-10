@@ -127,6 +127,27 @@ let css = {{"
     margin-bottom: 5px;
   }
   
+  /* Code Blocks */
+  pre {
+    background: #111;
+    padding: 15px;
+    border: 1px solid #333;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  code {
+    font-family: 'Courier New', Courier, monospace;
+    background: #111;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid #333;
+  }
+  pre code {
+    background: transparent;
+    padding: 0;
+    border: none;
+  }
+
   /* Discussion / Q&A Styles */
   .discussion-container {
     background: #151515;
@@ -306,37 +327,20 @@ let programming_lang_items = map (\p {"
 "}) programming_langs in
 
 # --- Avon Docs ---
-let avon_docs = [
-  { slug: "avon", title: "Avon", file: "avon_docs/intro.md" },
-  { slug: "avon-features", title: "Avon Features", file: "avon_docs/features.md" },
-  { slug: "avon-tutorial", title: "Avon Tutorial", file: "avon_docs/tutorial.md" }
-] in
-
-let avon_pages = map (\d
-  let raw = readfile d.file in
-  # Fix links
-  let c1 = replace raw "./tutorial/TUTORIAL.md" "avon-tutorial.html" in
-  let c2 = replace c1 "./tutorial/FEATURES.md" "avon-features.html" in
-  let c3 = replace c2 "tutorial/TUTORIAL.md" "avon-tutorial.html" in
-  let c4 = replace c3 "tutorial/FEATURES.md" "avon-features.html" in
-  
-  let html = markdown_to_html c4 in
+let avon_page = 
+  let raw = readfile "avon_docs/avon.md" in
+  let html = markdown_to_html raw in
   
   let content = {"
     {header_html}
-    <div style="margin-bottom: 20px; text-align: center;">
-       <a href="avon.html" class="btn">Intro</a>
-       <a href="avon-tutorial.html" class="btn">Tutorial</a>
-       <a href="avon-features.html" class="btn">Features</a>
-    </div>
     <article>
       <div class="content">
         {html}
       </div>
     </article>
   "} in
-  @{d.slug}.html {"{layout d.title content}"}
-) avon_docs in
+  @avon.html {"{layout "Avon" content}"}
+in
 
 # --- Page Generators ---
 
@@ -464,4 +468,4 @@ let programming_langs_page =
 in
 
 # --- Deploy List ---
-[index_page, programming_langs_page] + blog_pages + avon_pages
+[index_page, programming_langs_page, avon_page] + blog_pages
