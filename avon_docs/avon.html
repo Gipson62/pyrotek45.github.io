@@ -1,0 +1,58 @@
+<h1>Avon: Superpowers for Your Files</h1>
+
+<p><strong>Avon</strong> is a tool that gives superpowers to your configuration files. It combines a functional programming language with a deployment system, allowing you to generate and manage hundreds of files from a single source of truth.</p>
+
+<h2>What is Avon?</h2>
+
+<p>At its core, Avon solves the "copy-paste-modify" problem. Instead of maintaining 50 nearly identical YAML, JSON, or config files, you write one Avon program that generates them all.</p>
+
+<p>It works with <strong>any file format</strong>—YAML, JSON, TOML, HCL, shell scripts, or even documentation.</p>
+
+<h2>The Superpower: <code>@</code> Deployment</h2>
+
+<p>The magic of Avon is the <code>@</code> syntax. It lets you define exactly where a file should go, right inside the code that generates it.</p>
+
+<pre><code>let port = 8080 in
+let env = "production" in
+
+@/config/app.yaml {"
+  server:
+    port: {port}
+    environment: {env}
+    debug: {if env == "production" then "false" else "true"}
+"}
+</code></pre>
+
+<p>When you run <code>avon --deploy</code>, this file is created instantly.</p>
+
+<h2>Key Features</h2>
+
+<ul>
+  <li><strong>Variables & Functions</strong>: Don't repeat yourself. Define values once and use them everywhere.</li>
+  <li><strong>Logic</strong>: Use <code>if/else</code>, <code>map</code>, and <code>filter</code> to dynamically generate configuration.</li>
+  <li><strong>Type Safety</strong>: Avon checks your types before generating files, catching errors early.</li>
+  <li><strong>Git Deployment</strong>: You can deploy directly from a git repository:
+    <pre><code>avon --git user/repo --root ./output</code></pre>
+  </li>
+</ul>
+
+<h2>Why Use Avon?</h2>
+
+<ol>
+  <li><strong>Single Source of Truth</strong>: Change a value in one place, update 100 files.</li>
+  <li><strong>No More Typos</strong>: Programmatic generation eliminates copy-paste errors.</li>
+  <li><strong>Any Text File</strong>: If it's text, Avon can generate it.</li>
+</ol>
+
+<h2>Get Started</h2>
+
+<p>Avon is a single binary with no dependencies.</p>
+
+<pre><code># 1. Create a file
+echo 'let name = "World" in @/hello.txt "Hello, {name}!"' > hello.av
+
+# 2. Deploy
+avon hello.av --deploy --root ./output
+</code></pre>
+
+<p>Stop managing files by hand. Give them superpowers with Avon.</p>
